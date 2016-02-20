@@ -5,7 +5,7 @@ import time, datetime
 import os
 from networktables import NetworkTable
 
-if not os.path.exists("/media/usb/2481.txt"):
+if not os.path.exists("/media/TOM/2481.txt"):
 	#USB drive not detected
 	print "No usb drive detected."
 	sys.exit(0)
@@ -31,27 +31,33 @@ NetworkTable.initialize()
 #We want it large enough that manual flushing will activate before the buffer fills up, but not so large as to use up all the coprocessor's memory
 bufsize = 1048576 #?  Experimentation needed
 fnDateTime = datetime.datetime.now().strftime("%m.%d.%Y-%H.%M.%S")
-logFile = open("/media/usb/logFile-" + fnDateTime + ".csv", 'w', bufsize)
+logFile = open("/media/TOM/logFile-" + fnDateTime + ".csv", 'w', bufsize)
 
 matchOver = False #If this ever goes true we're about to shut down.  Do a final write and start the shutdown sequence
 
 q=0
 i = 0
 keyDict = {}
-while not matchOver and q<1000:
+while not matchOver and q<10000000:
 	print q
 	sdTable = NetworkTable.getTable("SmartDashboard")
+	logTable = NetworkTable.getTable("2481/log_table")
 	#Get the list of keys currently in the table
-	tableKeysList = sdTable.node.entryStore.keys()
-	for keyIter in range(len(tableKeysList)):
-		tableKeysList[keyIter] = str(tableKeysList[keyIter])
-	tableKeys = set(tableKeysList)
+	sdtableKeysList = sdTable.node.entryStore.keys()
+	logtableKeysList = logTable.node.entryStore.keys()
+	for keyIter in range(len(sdtableKeysList)):
+		sdtableKeysList[keyIter] = str(sdtableKeysList[keyIter])
+	for keyIter in range(len(logtableKeysList)):
+		logtableKeysList[keyIter] = str(logtableKeysList[keyIter])
+	sdtableKeys = set(sdtableKeysList)
+	logtableKeys = set(logtableKeysList)
 	#Subtract off the blacklisted "meta" keys to get a list of keys we are interested in
-	keysToLog = tableKeys.difference(keysToIgnoreSet)
+	sdkeysToLog = sdtableKeys.difference(keysToIgnoreSet)
+	logkeysToLog = logtableKeys.difference(keysToIgnoreSet)
 	#Iterate over every remaining key and push its value onto a string
 	entryStr = ""
-	if len(keysToLog) > 0:
-		for key in keysToLog:
+	if len(sdkeysToLog) > 0 or len(logkeysToLog) > 0:
+		for key in sdkeysToLog:
 			if not key.startswith("/SmartDashboard/"):
 				continue
 			if "~TYPE~" in key:
@@ -64,6 +70,17 @@ while not matchOver and q<1000:
 			keyDict[subkey] = 0
 			if subkey == "matchOver" and val == "true":
 				matchOver = True
+		for key in logkeysToLog:
+			if not key.startswith("/2481/log_table/"):
+				continue
+			if "~TYPE~" in key:
+				continue
+			in "/name" in key:
+				continue
+			subkey = key[16:]
+			val = str(logTable.getValue(str(subkey),"missing"))
+			entryStr += str(subkey) + ":" + val + "|"
+			keyDict[subkey] = 0
 		entryStr = entryStr[:-1]
 		entryStr += "\r\n"
 		logFile.write(entryStr)
@@ -92,4 +109,4 @@ logFile.close()
 
 print "DONE!"
 #Shut down the coprocessor.  Requires admin privileges
-#os.system("shutdown -P now")
+os.system("shutdown -P now")
