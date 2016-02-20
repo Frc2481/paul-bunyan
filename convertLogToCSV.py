@@ -19,7 +19,7 @@ for file in files:
 	headerStr = ""
 	for k in keys:
 		headerStr += k + ","
-	headerStr = headerStr[:-1]
+	headerStr = headerStr[:-1] + "\r\n"
 	convertedFile.write(headerStr)
 	
 	numEntries = len(keys)
