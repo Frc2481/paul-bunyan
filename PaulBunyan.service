@@ -1,0 +1,10 @@
+[Unit]
+Description=Python Paul Bunyan Service
+
+[Service]
+WorkingDirectory=/home/root/paul-bunyan/
+ExecStart=/usr/bin/python mainLogger.py
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+[Unit]
+Description=Bird Watcher Camera Service
+
+[Service]
+WorkingDirectory=/home/root/Bird-Watcher/
+ExecStart=/usr/bin/python main.py
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
