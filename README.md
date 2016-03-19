@@ -39,5 +39,5 @@ cd /usr/lib/connman/test
 
 ## View Log
 ```
-journalctl
+journalctl --no-pager | grep python
 ```
