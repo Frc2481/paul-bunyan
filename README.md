@@ -4,6 +4,7 @@
 ```
 opkg update
 opkg install python-pip
+opkg install python-setuptools
 opkg install python-opencv
 ```
 
