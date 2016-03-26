@@ -33,7 +33,7 @@ def main():
 		
 		prev = current
 		
-		if owlMissingCounter > 5:
+		if owlMissingCounter > 10:
 			print "Bird Watcher: Restarting Owl Service"
 			os.system("systemctl restart Camera")
 			time.sleep(5)
@@ -46,7 +46,7 @@ def main():
 			robotMissingCounter = 0
 		prevRobotMissing = currentRobotMissing
 
-		if robotMissingCounter > 5:
+		if robotMissingCounter > 10:
 			print "Robot Watcher: Restarting Owl Service"
 			os.system("systemctl restart Camera")
 			time.sleep(5)

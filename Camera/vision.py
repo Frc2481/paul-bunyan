@@ -5,8 +5,8 @@ class GoalFinder(object):
 
     def __init__(self):
         #HLS
-        self.minHLS = np.array([50, 112, 100])
-        self.maxHLS = np.array([141, 171, 255])
+        self.minHLS = np.array([50, 44, 126])
+        self.maxHLS = np.array([95, 223, 255])
         self.minArea = 150;
 
         self.targetAreas = []
@@ -34,7 +34,7 @@ class GoalFinder(object):
             x, y, w, h = cv2.boundingRect(c)
 
             if (area > self.minArea and #Min Area
-                    w < 1000 and        #Max Width
+                    w < 100 and        #Max Width
                     h < 1000):          #Max Height
 
                 #Center of image
