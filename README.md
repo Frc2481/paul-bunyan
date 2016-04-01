@@ -28,6 +28,11 @@ systemctl enable Camera
 systemctl enable BirdWatcher
 ```
 
+## Disable Services
+```
+systemctl disable gdm
+```
+
 ## Static IP
 ```
 ls -la /var/lib/connman/
